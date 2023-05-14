@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RobotDeveloperTestListener:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RobotDeveloperTestListener_jar</output-path>
+    <root id="archive" name="RobotDeveloperTestListener.jar">
+      <element id="module-output" name="RobotDeveloperTestListener" />
+    </root>
+  </artifact>
+</component>
