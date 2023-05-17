@@ -38,6 +38,7 @@ public class LibrariesDialog extends JDialog {
     }
 
     private LibrariesDialog() {
+        setModal(true);
         setTitle("Used Libraries and Resources");
         setLayout(new MigLayout("", "[]", "[][][]"));
         JLabel label = new JLabel("This page attributes thanks to all free libraries and resources provided by other open source contributors.");

@@ -14,6 +14,7 @@ public class LicenseDialog extends JDialog {
     }
 
     private LicenseDialog() {
+        setModal(true);
         setTitle("Licensing");
         JTextArea textArea = new JTextArea();
         textArea.setEditable(false);

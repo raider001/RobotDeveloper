@@ -37,8 +37,6 @@ public class EditorTabbedPane extends JTabbedPane {
         JPanel objectArea = new JPanel(new MigLayout("", "[fill]", "[fill]"));
 
         addTab("Text Area", robotScriptArea);
-//        addTab("Object Area", objectArea);
-//        addTab("Script results", new JPanel());
 
         InputMap map = robotScriptArea.getInputMap();
         KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
@@ -84,7 +82,7 @@ public class EditorTabbedPane extends JTabbedPane {
                 editorModel.setEdited(true);
                 Executors.newSingleThreadExecutor().execute(() -> {
                     try {
-                        getResources().parallelStream().forEach(commandHandler::generateDoc);
+                        getResources().stream().forEach(commandHandler::generateDoc);
                     } catch (BadLocationException e) {
                         throw new RuntimeException(e);
                     }

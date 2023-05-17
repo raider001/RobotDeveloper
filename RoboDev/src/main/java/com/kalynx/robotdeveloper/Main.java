@@ -5,6 +5,7 @@ import com.kalynx.lwdi.DependencyInjectionException;
 import com.kalynx.lwdi.DependencyInjector;
 import com.kalynx.robotdeveloper.command.CommandHandler;
 import com.kalynx.robotdeveloper.datastructure.LibraryResourceModel;
+import com.kalynx.robotdeveloper.datastructure.TextFormatModel;
 import com.kalynx.robotdeveloper.datastructure.WorkingDirectoryModel;
 import com.kalynx.robotdeveloper.datastructure.WorkspaceModel;
 import com.kalynx.robotdeveloper.graphic.ImageFactory;
@@ -16,12 +17,10 @@ import com.kalynx.robotdeveloper.ui.dialogs.TextColorDialog;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.FileAttribute;
 
 public class Main {
 
@@ -35,7 +34,6 @@ public class Main {
         } catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
-        TextColorDialog.getInstance();
         Path p = Paths.get(".", "pythonlistener");
 
         if(!Files.exists(p)) {
@@ -45,11 +43,13 @@ public class Main {
         try {
             InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("pythonlistener/listener.py");
             p = Paths.get(p.toString(), "listener.py");
+            assert is != null;
             Files.copy(is, p, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ex) {
-
+        } catch (IOException ignored) {
         }
 
+        DI.inject(TextFormatModel.class);
+        DI.inject(TextColorDialog.class);
         DI.inject(WorkingDirectoryModel.class);
         DI.inject(WorkspaceModel.class);
         DI.inject(LibraryResourceModel.class);
@@ -59,6 +59,7 @@ public class Main {
         DI.inject(ImageFactory.class);
         DI.inject(KeyReferencePane.class);
         DI.inject(WorkspacePanel.class);
+
         frame = DI.inject(MainWindow.class);
     }
 }

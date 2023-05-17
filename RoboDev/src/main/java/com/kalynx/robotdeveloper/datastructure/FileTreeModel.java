@@ -47,8 +47,11 @@ public class FileTreeModel implements TreeModel {
 
     @Override
     public boolean isLeaf(Object node) {
-        File f = (File) node;
-        return !f.isDirectory();
+        if(node instanceof File) {
+            File f = (File) node;
+            return !f.isDirectory();
+        }
+        return false;
     }
 
     @Override

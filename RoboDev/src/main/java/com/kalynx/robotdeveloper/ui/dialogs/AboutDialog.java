@@ -14,6 +14,7 @@ public class AboutDialog extends JDialog {
     }
 
     private AboutDialog() {
+        setModal(true);
         setTitle("About");
         JTextArea textArea = new JTextArea();
         textArea.setEditable(false);

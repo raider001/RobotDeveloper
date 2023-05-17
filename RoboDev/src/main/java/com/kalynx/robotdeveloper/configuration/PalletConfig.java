@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 public class PalletConfig implements Serializable {
 
+    private Color def;
     private Color sections;
     private Color newKeyWords;
     private Color setupWords;
@@ -12,14 +13,17 @@ public class PalletConfig implements Serializable {
     private Color variables;
     private Color comments;
     private Color importedWords;
+    private int fontSize;
 
-    public PalletConfig(Color sections,
+    public PalletConfig(Color def,
+                        Color sections,
                         Color newKeyWords,
                         Color setupWords,
                         Color resourceAndLib,
                         Color variables,
                         Color comments,
-                        Color importedWords) {
+                        Color importedWords, int fontSize) {
+        this.def = def;
         this.sections = sections;
         this.newKeyWords = newKeyWords;
         this.setupWords = setupWords;
@@ -27,6 +31,7 @@ public class PalletConfig implements Serializable {
         this.variables = variables;
         this.comments = comments;
         this.importedWords = importedWords;
+        this.fontSize = fontSize;
     }
 
     public Color getSections() {
@@ -83,5 +88,21 @@ public class PalletConfig implements Serializable {
 
     public void setImportedWords(Color importedWords) {
         this.importedWords = importedWords;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public Color getDef() {
+        return def;
+    }
+
+    public void setDef(Color def) {
+        this.def = def;
     }
 }

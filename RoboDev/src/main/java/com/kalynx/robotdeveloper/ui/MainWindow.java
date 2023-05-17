@@ -33,11 +33,13 @@ public class MainWindow extends JFrame {
     private final WorkspaceModel workspaceModel;
     private final WorkspacePanel workspacePanel;
     private final ImageFactory imageFactory;
+    private final TextColorDialog textColorDialog;
     private Consumer<File> workingDirectoryModelChangeListener;
-    public MainWindow(WorkingDirectoryModel workingDirectoryModel, WorkspaceModel workspaceModel, WorkspacePanel workspacePanel, ImageFactory imageFactory) {
+    public MainWindow(WorkingDirectoryModel workingDirectoryModel, WorkspaceModel workspaceModel, WorkspacePanel workspacePanel, ImageFactory imageFactory, TextColorDialog textColorDialog) {
         this.workingDirectoryModel = Objects.requireNonNull(workingDirectoryModel);
         this.workspaceModel = Objects.requireNonNull(workspaceModel);
         this.imageFactory = Objects.requireNonNull(imageFactory);
+        this.textColorDialog = Objects.requireNonNull(textColorDialog);
         this.workspacePanel = workspacePanel;
         workspacePanel.setMinimumSize(new Dimension(700, 100));
         setTitle("Robot Developer");
@@ -126,8 +128,8 @@ public class MainWindow extends JFrame {
 
         JMenuItem textColorItem = new JMenuItem("Text Theme");
         textColorItem.addActionListener(a -> {
-            TextColorDialog.getInstance().setLocationRelativeTo(this);
-            TextColorDialog.getInstance().setVisible(true);
+            textColorDialog.setLocationRelativeTo(this);
+            textColorDialog.setVisible(true);
         });
         options.add(textColorItem);
         menuBar.add(options);
