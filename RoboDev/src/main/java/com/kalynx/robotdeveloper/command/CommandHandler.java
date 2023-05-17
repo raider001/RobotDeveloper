@@ -24,24 +24,13 @@ public class CommandHandler {
         if(activeProcess == null || !activeProcess.isAlive()) {
             try {
                 String listenerPath = new File(".").getCanonicalPath() + "/pythonlistener/listener.py";
-                ProcessBuilder process = new ProcessBuilder("robot", "--listener", listenerPath, testFile.toString());
-
-                String os = System.getProperty("os.name");
-
-                String path;
-                if(os.startsWith("Windows")) {
-                    path = System.getenv().get("Path");
-                    process.environment().put("Path", path);
-                } else {
-                    path = System.getenv().get("PATH");
-                    process.environment().put("PATH", path);
-                }
-
-                process.environment().put("DISABLE_SIKULI_LOG", "yes");
-                process.redirectError(ProcessBuilder.Redirect.INHERIT);
-                process.redirectInput(ProcessBuilder.Redirect.INHERIT);
-                process.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-                activeProcess = process.start();
+                ProcessBuilder processBuilder = new ProcessBuilder("robot", "--listener", listenerPath, testFile.toString());
+                setPath(processBuilder);
+                processBuilder.environment().put("DISABLE_SIKULI_LOG", "yes");
+                processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+                processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+                processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                activeProcess = processBuilder.start();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -67,8 +56,7 @@ public class CommandHandler {
         if(!fullPath.toFile().exists()) {
 
             ProcessBuilder processBuilder = new ProcessBuilder("libdoc", loc, fullPath.toString());
-            String path = System.getenv().get("PATH");
-            processBuilder.environment().put("PATH", path);
+            setPath(processBuilder);
             processBuilder.environment().put("DISABLE_SIKULI_LOG", "yes");
             processBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
             processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
@@ -97,5 +85,17 @@ public class CommandHandler {
         }
 
         RobotTokenizer.getInstance().addDynamicTokens(model.getAllKeyWords().toArray(String[]::new));
+    }
+
+    private void setPath(ProcessBuilder processBuilder) {
+        String os = System.getProperty("os.name");
+        String path;
+        if(os.startsWith("Windows")) {
+            path = System.getenv().get("Path");
+            processBuilder.environment().put("Path", path);
+        } else {
+            path = System.getenv().get("PATH");
+            processBuilder.environment().put("PATH", path);
+        }
     }
 }
