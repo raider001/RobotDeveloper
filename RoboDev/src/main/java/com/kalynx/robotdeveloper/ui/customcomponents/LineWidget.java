@@ -18,7 +18,7 @@ public class LineWidget extends JPanel implements CaretListener {
     private int selectedLine = 0;
     private final JTextComponent mainComponent;
     private final Set<LineData> lineData = new HashSet<>();
-
+    private int charWidth = 3;
     private final boolean manuallyManaged;
     public LineWidget(JTextComponent component, boolean manuallyManaged) {
         this.manuallyManaged = manuallyManaged;
@@ -46,7 +46,7 @@ public class LineWidget extends JPanel implements CaretListener {
         Font f = new Font(mainComponent.getName(), Font.PLAIN, Main.DI.getDependency(TextFormatModel.class).getModel().getFontSize());
         FontMetrics fontMetrics = getFontMetrics(f);
         Insets insets = getInsets();
-        int width = fontMetrics.charWidth('0') * 3;
+        int width = fontMetrics.charWidth('0') * charWidth;
 
         Dimension widgetSize = new Dimension(insets.left + width + insets.right, WIDGET_HEIGHT);
         setMinimumSize(widgetSize);
@@ -75,10 +75,10 @@ public class LineWidget extends JPanel implements CaretListener {
             Font f = new Font(mainComponent.getName(), Font.PLAIN, Main.DI.getDependency(TextFormatModel.class).getModel().getFontSize());
             FontMetrics fontMetrics = getFontMetrics(f);
             g.setFont(f);
-
+            String lineNumber = "";
             try {
                 while (rowStartOffset <= rowEndOffset) {
-                    String lineNumber = getLineNumber(rowStartOffset);
+                    lineNumber = getLineNumber(rowStartOffset);
                     Rectangle2D r = mainComponent.modelToView2D(rowStartOffset);
                     int x = getXOffset(fontMetrics.stringWidth(lineNumber), getSize().width - getInsets().left - getInsets().right);
                     int y = (int) (r.getY() + r.getHeight() - fontMetrics.getDescent());
@@ -88,6 +88,8 @@ public class LineWidget extends JPanel implements CaretListener {
             } catch (BadLocationException e) {
                 throw new RuntimeException(e);
             }
+            charWidth = lineNumber.length();
+            updateSize();
         }
     }
 
@@ -118,11 +120,12 @@ public class LineWidget extends JPanel implements CaretListener {
             g.setFont(f);
             g.drawString(item.text, x, y);
         });
+        charWidth = lineData.stream().map(item -> item.text.length()).max(Integer::compareTo).orElse(1);
+        updateSize();
         getParent().repaint();
     }
 
-    protected String getLineNumber(int rowStartOffset)
-    {
+    protected String getLineNumber(int rowStartOffset) {
         Element root = mainComponent.getDocument().getDefaultRootElement();
         int index = root.getElementIndex( rowStartOffset );
         Element line = root.getElement( index );

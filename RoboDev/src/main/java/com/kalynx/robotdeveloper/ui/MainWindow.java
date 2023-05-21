@@ -2,10 +2,7 @@ package com.kalynx.robotdeveloper.ui;
 
 import com.kalynx.robotdeveloper.configuration.ConfigWriter;
 import com.kalynx.robotdeveloper.configuration.WorkspaceConfiguration;
-import com.kalynx.robotdeveloper.datastructure.EditorModel;
-import com.kalynx.robotdeveloper.datastructure.FileTreeModel;
-import com.kalynx.robotdeveloper.datastructure.WorkingDirectoryModel;
-import com.kalynx.robotdeveloper.datastructure.WorkspaceModel;
+import com.kalynx.robotdeveloper.datastructure.*;
 import com.kalynx.robotdeveloper.fileoperations.CreateTestSuite;
 import com.kalynx.robotdeveloper.graphic.ImageFactory;
 import com.kalynx.robotdeveloper.ui.customcomponents.FileTree;
@@ -21,7 +18,10 @@ import javax.swing.*;
 import javax.swing.tree.TreeModel;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,12 +34,19 @@ public class MainWindow extends JFrame {
     private final WorkspacePanel workspacePanel;
     private final ImageFactory imageFactory;
     private final TextColorDialog textColorDialog;
+    private final OutputModel outputModel;
     private Consumer<File> workingDirectoryModelChangeListener;
-    public MainWindow(WorkingDirectoryModel workingDirectoryModel, WorkspaceModel workspaceModel, WorkspacePanel workspacePanel, ImageFactory imageFactory, TextColorDialog textColorDialog) {
+    public MainWindow(WorkingDirectoryModel workingDirectoryModel,
+                      WorkspaceModel workspaceModel,
+                      WorkspacePanel workspacePanel,
+                      ImageFactory imageFactory,
+                      TextColorDialog textColorDialog,
+                      OutputModel outputModel) {
         this.workingDirectoryModel = Objects.requireNonNull(workingDirectoryModel);
         this.workspaceModel = Objects.requireNonNull(workspaceModel);
         this.imageFactory = Objects.requireNonNull(imageFactory);
         this.textColorDialog = Objects.requireNonNull(textColorDialog);
+        this.outputModel = Objects.requireNonNull(outputModel);
         this.workspacePanel = workspacePanel;
         workspacePanel.setMinimumSize(new Dimension(700, 100));
         setTitle("Robot Developer");
@@ -59,8 +66,26 @@ public class MainWindow extends JFrame {
     }
 
     private void addMainPanel() {
+        JSplitPane rootSplitPane = new JSplitPane();
+        rootSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, addFolderNavigation(), workspacePanel);
-        add(splitPane, "cell 0 1, grow");
+        rootSplitPane.setTopComponent(splitPane);
+        JScrollPane outputScrollPane = new JScrollPane();
+        JEditorPane outputArea = new JEditorPane();
+        outputArea.setContentType("text/html");
+        outputArea.setText("<html>Waiting for results.</html>");
+        outputArea.setEditable(false);
+
+        outputModel.addListener(item -> {
+            SwingUtilities.invokeLater(() -> {
+            outputArea.setText("<html><body>" + Instant.now().toString() + ": Results located at: <a href=\"" + item.getAbsoluteFile().getPath() + "\">" + item.getAbsoluteFile().getPath() + "</a></body></html>");
+
+            });
+        });
+        outputScrollPane.setViewportView(outputArea);
+        outputScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        rootSplitPane.setBottomComponent(outputScrollPane);
+        add(rootSplitPane, "cell 0 1, grow");
     }
 
     private JComponent addFolderNavigation() {

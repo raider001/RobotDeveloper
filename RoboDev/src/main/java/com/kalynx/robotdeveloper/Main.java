@@ -4,10 +4,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.kalynx.lwdi.DependencyInjectionException;
 import com.kalynx.lwdi.DependencyInjector;
 import com.kalynx.robotdeveloper.command.CommandHandler;
-import com.kalynx.robotdeveloper.datastructure.LibraryResourceModel;
-import com.kalynx.robotdeveloper.datastructure.TextFormatModel;
-import com.kalynx.robotdeveloper.datastructure.WorkingDirectoryModel;
-import com.kalynx.robotdeveloper.datastructure.WorkspaceModel;
+import com.kalynx.robotdeveloper.datastructure.*;
 import com.kalynx.robotdeveloper.graphic.ImageFactory;
 import com.kalynx.robotdeveloper.server.TestCollectionServer;
 import com.kalynx.robotdeveloper.ui.MainWindow;
@@ -48,6 +45,7 @@ public class Main {
         } catch (IOException ignored) {
         }
 
+        DI.inject(OutputModel.class);
         DI.inject(TextFormatModel.class);
         DI.inject(TextColorDialog.class);
         DI.inject(WorkingDirectoryModel.class);

@@ -23,7 +23,7 @@ public class WorkspacePanel extends JPanel {
         this.workingDirectoryModel = Objects.requireNonNull(workingDirectoryModel);
         this.commandHandler = Objects.requireNonNull(commandHandler);
         editorPanes = new FileTabbedPane(workspaceModel, commandHandler);
-        setLayout(new MigLayout("", "0[][grow]0", "0[grow]0"));
+        setLayout(new MigLayout("", "0[][grow]0", "0[grow][]0"));
         add(createControls(), "cell 0 0, top");
         JSplitPane workspaceSplitPane = new JSplitPane();
         add(workspaceSplitPane, "grow, cell 1 0");
@@ -79,7 +79,7 @@ public class WorkspacePanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             EditorPanel panel =  (EditorPanel)editorPanes.getSelectedComponent();
             SwingUtilities.invokeLater(panel::clearTestResults);
-            commandHandler.runTest(workingDirectoryModel.getModel(), panel.getEditorModel().getFile());
+            commandHandler.runTest(panel.getEditorModel().getFile());
         }
     }
     private class SaveSelectedEditorAL implements ActionListener {
